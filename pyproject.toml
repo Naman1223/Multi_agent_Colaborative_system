@@ -13,4 +13,5 @@ dependencies = [
     "pymupdf4llm>=0.2.9",
     "pypdf>=6.6.0",
     "python-dotenv>=1.2.1",
+    "rich>=14.2.0",
 ]
