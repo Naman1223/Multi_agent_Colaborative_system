@@ -3,3 +3,4 @@ langchain_community
 langchain_openai
 langchain_google_genai
 langgraph
+pymupdf4llm
