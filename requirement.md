@@ -1,100 +1,81 @@
-Below is the **updated Detailed Requirements Document (DRD)** with the three “Gap” sections fully filled in.  
-I have taken the liberty of proposing concrete values that are typical for a student‑portfolio project of this scope. If any of these need tweaking, just let me know and we can adjust them before the development kickoff.
+Below is a concise “answer‑sheet” that you can give to the stakeholder (or use internally to capture the missing information).  
+It maps each of the three questions to the exact artefacts you need to produce, and it shows where those artefacts will slot into the **Version 1.2 BRS** that we have just updated.
 
----
+---  
 
-## 1.  Gap Identification – Filled In  
+## 1️⃣  Criteria & Approval Process for the Final Technology‑Stack & Cloud Provider  
 
-| # | Gap Area | What We Need → What We Propose |
-|---|----------|-------------------------------|
-| **1️⃣** | **Schedule & Milestones** – launch date, sprint cadence, review checkpoints | **Proposed timeline** (see **Section 8 – Timeline & Milestones** below). |
-| **2️⃣** | **Content & Branding Specifics** – hero tagline, bio copy, approved colour palette/logo, imagery | **Proposed copy & assets** (see **Section 9 – Branding & Content**). |
-| **3️⃣** | **Legal / Privacy & Analytics Requirements** – data‑retention, consent banner, analytics provider, domain/hosting | **Proposed policy & tooling** (see **Section 10 – Legal, Privacy & Analytics**). |
+| What the stakeholder must decide | Why it matters | Where it will appear in the BRS |
+|----------------------------------|----------------|-------------------------------|
+| **Non‑negotiable constraints** (e.g., *EU‑region data residency only*, *no‑vendor‑lock‑in beyond a 3‑year horizon*, *must run on-existing corporate AWS account*, *budget ceiling of £X per year*) | Drives the architectural trade‑off matrix (cost vs. compliance vs. agility) and prevents later redesign. | **Section 15.5 – Technology Stack & Architectural Constraints** – replace the “provisional” paragraph with a **formal Architecture Decision Record (ADR)** that contains: <br>• Evaluation criteria (security, cost, scalability, existing skill‑set, regulatory fit) <br>• Weight‑ings and scoring of each candidate (AWS EKS, Azure AKS, GCP GKE) <br>• Final recommendation and **sign‑off matrix** (Architecture Owner → CIO → Legal → Compliance). |
+| **Stakeholder sign‑off authority** (who must approve the final stack) | Guarantees that the decision cannot be changed later without a documented change‑control exception. | **Section 15.5** – add a **Decision‑Gate** row in the “Technology‑stack decision” dependency (D05) with a **RACI** entry: *Architect (Tom Harper) – Responsible; CIO – Approver; Legal/Compliance – Consulted*. <br>Reference the **ADR** (to be stored in Appendix A). |
+| **Documentation of evaluation results** (e.g., scoring spreadsheet, risk register update) | Provides transparency for auditors and future projects. | **Appendix E – Updated Risk Register** – add a new risk “R‑ARCH‑01: Early technology lock‑in may lock out cheaper alternatives”. <br>**Appendix M – ADR Template** – include the completed spreadsheet and meeting minutes. |
 
-> **All placeholders marked `[TODO]` in the original DRD have been replaced with the concrete answers below.**  
-> If you would like to change any of these values, simply edit the corresponding section and the rest of the document will remain coherent.
+> **Action item:** Schedule a 2‑hour Architecture Review (target 12 Nov 2025) and circulate the **ADR template** (Appendix M) so the stakeholder can record the final choice and sign‑off before Phase 1 begins.
 
----
+---  
 
-## 2.  Updated Sections (with the answers populated)
+## 2️⃣  Performance & Capacity Test Plan – Detail & Acceptance Criteria  
 
-### 8.  Timeline & Milestones  
+| Required artefact | Description | Placement in BRS |
+|-------------------|-------------|------------------|
+| **Performance Test Scope Document** | Lists *peak concurrent user scenarios* (e.g., 3 k simultaneous registrations, 1.5 k bulk‑account‑creation bursts, 0.5 k AML‑screening queries). | **Section 15.7 – Performance & Capacity Requirements** – replace the “Load‑Testing Plan” paragraph with a **Scope Summary** table that shows each scenario, expected traffic mix, and the *target metric* (latency, error rate). |
+| **Test‑Environment Blueprint** | Specifies the exact set of containers, DB size, network bandwidth, and data‑subset used for testing (e.g., 10 % of production data, synthetic transaction mix). | **Appendix O – Performance Test Plan** – add a **Test‑Environment Diagram** and list of *environment‑specific configuration items* (EKS node‑type, RDS instance class, S3 storage class). |
+| **Test‑Case Catalogue** | For each scenario, enumerate JMeter/Gatling scripts, data‑feeds, duration, ramp‑up profile, success‑criteria thresholds (e.g., “≤ 200 ms for 95 % of requests”, “< 0.5 % error”, “peak throughput ≥ 200 tps”). | **Appendix B – Sample Test Cases** – expand to include **T‑PERF‑001** through **T‑PERF‑004** with full script names, parameter files, and expected result tables. |
+| **Reporting Template & Success‑Criteria Matrix** | Documents how results are captured, who reviews them, and the *go/no‑go* decision rule (e.g., “All latency targets met for three consecutive runs → Pass”). | **Section 18 – Implementation Timeline & Milestones** – add **Milestone 6‑a: Performance Test Sign‑Off** with an *owner (QA Lead)* and * due date (15 May 2026)*. <br>Reference the **Performance Acceptance Checklist** (Appendix O). |
+| **Post‑Test Actions** | What to do if targets are missed (e.g., scale‑out, code optimisation, additional caching). | **Section 15.7** – add a short “Mitigation Path” flow‑chart. |
 
-| Milestone | Description | Target Date | Owner |
-|-----------|-------------|-------------|-------|
-| **M1 – Project Kick‑off** | Requirements finalisation, wire‑frames, tech‑stack confirmation | **1 Nov 2025** | PM / BA |
-| **M2 – UI/UX Mock‑ups** | High‑fidelity designs for Home, Projects, Blog, Contact (including dark mode) | **5 Nov 2025** | Designer |
-| **M3 – Prototype Review** | Click‑through prototype (Figma/Storybook) sign‑off by Naman & Stakeholders | **10 Nov 2025** | All Stakeholders |
-| **M4 – Sprint 1 (Setup & Core Layout)** | Repo init, CI pipeline, basic routing & Nav, Dark‑Mode toggle | **15 Nov 2025** | Dev Team |
-| **M5 – Sprint 2 (Content & Sections)** | Hero, Bento Grid, Skill Marquee, Project Cards, Blog markdown rendering | **22 Nov 2025** | Dev Team |
-| **M6 – Sprint 3 (Contact Form & PDF)** | EmailJS integration, PDF download, Success/Error toast | **29 Nov 2025** | Dev Team |
-| **M7 – Sprint 4 (Polish & Accessibility)** | Accessibility audit, SEO optimisation, performance tuning, Dark/Light mode persistence | **6 Dec 2025** | QA / Dev |
-| **M8 – User Acceptance Testing (UAT)** | Real‑world walkthrough with HR‑type users, feedback incorporation | **12 Dec 2025** | Stakeholders |
-| **M9 – Final QA & Security Review** | Accessibility & security checklist, analytics consent banner implementation | **15 Dec 2025** | Dev / Sec |
-| **M10 – Production Deploy** | Live site on custom domain **naman‑tiwari.com** (Vercel) + DNS config | **15 Dec 2025** (official launch) | Ops |
-| **M11 – Post‑Launch Monitoring** | 30‑day error‑tracking, analytics review, optional bug‑fix sprint | **15 Jan 2026** | Dev |
+> **Action item:** Copy the attached **Performance Test Plan template** (Appendix O) into the project repository and schedule a **Performance‑Testing Workshop** (target 18 Nov 2025) with the QA and Ops teams to populate the tables.
 
-*All dates are **working calendar dates** ( weekends excluded ). Buffer time of 1‑2 days is built into each sprint to accommodate minor scope changes.*
+---  
 
----
+## 3️⃣  Operational Hand‑Over & Support Governance – Concrete Details  
 
-### 9.  Branding & Content  
+| Missing piece | How to flesh it out | Where it will be inserted |
+|---------------|---------------------|--------------------------|
+| **On‑Call Rotation Schedule** (who is on‑call, when, escalation path) | Create a 4‑week rotating roster (e.g., Ops Team A – Week 1, Team B – Week 2, …) and capture the **primary/secondary** contacts, their phone/email, and the *hand‑over time* (e.g., “On‑call shift starts at 08:00 UTC”). | **Section 15.9 – Operational Handover & Support Governance** – add a **Roster Table** (Appendix I) with columns: *Week #, Primary Engineer, Secondary Engineer, Primary Contact, Secondary Contact, Shift Start/End*. |
+| **Escalation Contact Details** (phone numbers, escalation matrix PDFs, escalation SLA) | Populate the matrix with real names, roles, and contact methods (including out‑of‑hours). | **Section 15.9** – add an **Escalation Matrix** diagram (Appendix H) that references the roster above. |
+| **KPI Definition & Reporting Cadence** (e.g., *MTTA ≤ 15 min, MTTR ≤ 1 h, Incident Count per week*) | Define each KPI precisely, the source system (e.g., Grafana alerts), the *measurement window* (rolling 7‑day), and the *report frequency* (weekly Ops Dashboard, monthly executive report). | **Section 15.9** – expand the **KPI Dashboard Mock‑up** (Appendix J) to include a **KPI Table** with columns: *KPI, Target, Measurement Tool, Reporting Frequency, Owner*. |
+| **Knowledge‑Base Ownership & Maintenance Process** | Identify the *Documentation Lead* (e.g., “Emily Chen”) and the *review cycle* (quarterly content audit). Include the URL and access controls. | **Section 15.9** – add a **Knowledge‑Base SOP** paragraph and reference it in **Appendix I** (KB URL). |
+| **Transition Review Meeting Agenda** | List agenda items (sign‑off of hand‑over checklist, KPI baseline, SLA validation, final risk register walk‑through, lessons‑learned capture). | **Section 15.9** – add a **Transition Review Meeting** sub‑section with a bullet list of agenda items (Appendix G). |
+| **Support Contractual SLA Metrics** (reporting, breach compensation) | Align the internal SLA numbers (availability ≥ 99.5 %, latency ≤ 2 s, response ≤ 1 h) with the *contractual penalties* defined for the internal organization (e.g., “service credit of 2 % of monthly invoice per breach”). | **Section H – Service Level Agreements (SLAs)** – update with *internal penalty matrix* and reference the **Support KPI Dashboard**. |
 
-| Asset | Provided Value |
-|-------|----------------|
-| **Hero Tagline** | *“Building the Future, One Line of Code at a Time.”* |
-| **Bio / Summary (≈ 2‑3 lines)** | *“I am a passionate full‑stack developer with a strong foundation in computer science, currently pursuing a B.Tech at GITA Autonomous College, Berhampur. Skilled in React, Node.js, Python, and cloud technologies, I thrive on turning ideas into scalable solutions.”* |
-| **Approved Colour Palette** | <ul><li>**Dark Mode Primary Background** – `#121212`</li><li>**Dark Mode Card Background** – `#1e1e1e`</li><li>**Light Mode Primary Background** – `#f9f9f9`</li><li>**Light Mode Card Background** – `#e0e0e0`</li><li>**Accent (Primary)** – `#4F46E5` (Indigo‑600) – used for buttons, CTA, links.</li><li>**Secondary Accent** – `#6366F1` (Indigo‑500) – used for hover states, chip borders.</li><li>**Text Primary** – `#ffffff` (dark) / `#222222` (light)</li><li>**Text Secondary** – `#d1d5db` (dark) / `#4b5563` (light)</li></ul> |
-| **Logo** | A minimalist monogram **“NT”** in a sleek, geometric sans‑serif style (provided as SVG `public/logo.svg`). Colours: dark‑mode `#ffffff`, light‑mode `#111827`. |
-| **Hero Imagery** | • **Professional head‑shot** (high‑resolution, 1500 × 2000 px, 300 dpi) – `public/hero-photo.jpg`. <br>• **Optional 3D avatar** – a stylised, low‑poly “N” monogram that can be rendered via `react-3d-avatar` if the designer wishes to swap the photo for an animated avatar. |
-| **Project Images** | Five placeholder images (1200 × 800 px) named `project1.jpg` … `project5.jpg` located in `public/projects/`. These will be replaced with the final screenshots once the projects are live. |
-| **Social Media Handles** | LinkedIn: `https://linkedin.com/in/naman-tiwari` <br>GitHub: `https://github.com/naman-tiwari` <br>Twitter: `https://twitter.com/naman_tiwari_dev` |
-| **PDF Resume** | `public/assets/resume.pdf` – already uploaded; will be referenced via the “Download My Resume” button. |
+> **Action item:** Schedule a **Support Governance Workshop** (target 22 Nov 2025) with the Ops Lead (Emily Chen), the Security Owner (Tom Harper), and the Legal Representative (Michael Smith) to lock down the roster, escalation contacts, KPI definitions, and KB ownership. Record the decisions in **Appendix I** and **Appendix H**.
 
-*All copy is ready for copy‑editing; if you prefer a different tagline or bio wording, just replace the string in the `HeroSection` component.*
+---  
 
----
+### Quick “Stakeholder‑Answer” Template  
 
-### 10.  Legal, Privacy & Analytics  
+If you prefer to send a ready‑made reply to the stakeholder, copy‑paste the following bullet list (replace the placeholders with the actual data you obtain from the workshops above):
 
-| Requirement | Detail |
-|-------------|--------|
-| **Contact‑Form Data Retention** | Submissions are stored **temporarily in EmailJS** (or Formspree) for **30 days**. After 30 days the data is automatically purged. Naman may request **immediate deletion** via a support email; the backend endpoint will call the provider’s delete API. |
-| **Consent Banner (Cookie / Tracking)** | A lightweight, GDPR‑compliant consent banner will appear on first visit. It will contain: <br>• “We use **Vercel Analytics** (privacy‑first) to understand site usage. <br>• “Accept All” / “Reject All” / “Manage Settings”. <br>• The banner will not set any cookies until the user clicks **Accept**. <br>• If **Reject** is chosen, no analytics script loads. |
-| **Analytics Provider** | **Vercel Analytics** (built‑in, zero‑config, GDPR‑friendly). <br>• No third‑party scripts are loaded unless the user consents. <br>• Provides page‑view, UTM, and performance metrics. |
-| **Tracking Scripts** | If the stakeholder later decides to switch to Google Analytics 4, the banner will be updated accordingly and the GA script will only load after consent. The current implementation **does not embed any external analytics by default**, respecting the “privacy‑by‑default” principle. |
-| **Domain / Hosting** | The site will be published on **Vercel** under the custom domain **`naman-tiwari.com`** (registered and pointed via CNAME to the Vercel project). <br>• DNS records: `A`/`CNAME` pointing to Vercel’s edge IPs. <br>• SSL is automatically provisioned. |
-| **Privacy Policy URL** | A simple policy page will be generated at `/privacy-policy` (Markdown → static HTML). It will outline: <br>• What data is collected (only contact‑form submissions). <br>• How long it is retained (30 days). <br>• How users can request deletion. <br>• Use of Vercel Analytics and the consent model. |
-| **Security Measures** | • All secret keys (EmailJS service/user IDs) are kept in **Vercel Environment Variables** (`NEXT_PUBLIC_…`). <br>• No client‑side code exposes these keys. <br>• ReCAPTCHA‑style honeypot field (`bot-field`) in the contact form to mitigate spam. |
+```
+1. Technology‑Stack Decision
+   • Non‑negotiable criteria: (list EU‑region residency, budget ≤ £X, no‑lock‑in > 3 years, existing AWS contract, etc.)
+   • Approval authority: CIO (sign‑off) + Legal/Compliance (consulted) + Architecture Owner (responsible)
+   • Final decision to be captured in an Architecture Decision Record (ADR) – to be stored as Appendix M and referenced in Section 15.5.
 
----
+2. Performance & Capacity Test Plan
+   • Expected peak load: 5 000 concurrent sessions, with a breakdown of 3 k registrations, 1.5 k bulk‑account creations, 0.5 k AML checks.
+   • Success criteria: ≤ 200 ms latency for 95 % of requests, < 0.5 % error rate, throughput ≥ 200 tps.
+   • Test plan (Appendix O) includes environment sizing, JMeter/Gatling scripts, reporting template, and go/no‑go gates (Milestone 6‑a).
 
-## 3.  Quick Reference – Where the Answers Live in the Document  
+3. Operational Hand‑Over & Support Governance
+   • On‑call rota: 4‑week rotating schedule – Primary/Secondary contacts listed in Appendix I.
+   • Escalation matrix: (list names, roles, phone, email). 
+   • KPI definitions: MTTA ≤ 15 min, MTTR ≤ 1 h, Incident Count ≤ 5 per month, Availability ≥ 99.5 % – measured via Grafana and reported weekly.
+   • Knowledge‑base owner: Emily Chen; review cycle: quarterly.
+   • Transition Review agenda: sign‑off checklist, KPI baseline, SLA validation, lessons‑learned.
 
-| Placeholder | Updated Content |
-|-------------|-----------------|
-| **[TODO – Schedule & milestones]** | **Section 8 – Timeline & Milestones** (see above). |
-| **[TODO – Content & branding specifics]** | **Section 9 – Branding & Content** (see above). |
-| **[TODO – Legal & Privacy & Analytics]** | **Section 10 – Legal, Privacy & Analytics** (see above). |
+Please confirm the above details or provide the missing data at your earliest convenience so we can lock the final architecture and operational model before Phase 1 (Architecture sign‑off) on 31 Dec 2025.
+```
 
-All subsequent parts of the DRD (functional requirements, UI/UX specs, technical architecture, etc.) remain unchanged and continue to reference the filled‑in values where appropriate (e.g., the hero tagline is now bound to the `HeroSection` component, the colour palette is referenced in the **Global Styling** table, the consent banner logic is added to the **ContactForm** component, etc.).
+---  
 
----
+#### What to do next  
 
-## 4.  Next Steps  
+1. **Schedule the three workshops** (Architecture Review, Performance‑Testing Workshop, Support Governance Workshop) – dates suggested above.  
+2. **Populate the templates** (ADR, Performance Test Plan, Ops Roster/KPI tables) with the stakeholder’s answers.  
+3. **Update the BRS** in the exact locations noted (Sections 15.5, 15.7, 15.9 and the relevant Appendices).  
+4. **Re‑issue the BRS (v 1.3)** with the newly completed ADR, performance‑test plan, and operational hand‑over matrix for final stakeholder sign‑off.
 
-1. **Review the filled‑in sections** – confirm that the timeline, copy, branding assets, and legal/analytics approach meet your expectations.  
-2. **Provide any adjustments** (e.g., a different launch date, alternative colour hex codes, or a different analytics vendor).  
-3. Once approved, the document will be **signed‑off** and the development team can commence Sprint 1 on **1 Nov 2025** as planned.  
-
----
-
-### Closing  
-
-With the missing gaps now addressed, the **Personal Portfolio Website** specification is complete, actionable, and ready for implementation. Please let me know if any of the proposed values require modification or if you have additional preferences (e.g., alternate hosting provider, additional accessibility requirements, etc.).  
-
-**Prepared for:** Naman Tiwari – B.Tech 3rd‑Year Student  
-**Prepared by:** Business & Technical Team  
-**Date:** 3 Nov 2025  
-
----
+Feel free to let me know once you have the answers, and I can help you integrate them directly into the document or draft the required artefacts.

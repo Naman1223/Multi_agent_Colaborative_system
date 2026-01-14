@@ -5,3 +5,7 @@ langchain_google_genai
 langgraph
 pymupdf4llm
 rich
+requests
+Flask
+PyExecJs
+pywebview

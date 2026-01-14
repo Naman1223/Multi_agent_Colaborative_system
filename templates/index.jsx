@@ -1,0 +1,226 @@
+import React, { useState, useEffect } from 'react';
+
+const NewsArticleSection = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('all');
+
+  const categories = [
+    { id: 'all', name: 'All News' },
+    { id: 'politics', name: 'Politics' },
+    { id: 'technology', name: 'Technology' },
+    { id: 'business', name: 'Business' },
+    { id: 'health', name: 'Health' },
+    { id: 'entertainment', name: 'Entertainment' }
+  ];
+
+  const mockArticles = [
+    {
+      id: 1,
+      title: "Global Climate Summit Reaches Historic Agreement",
+      summary: "World leaders have达成了一项具有里程碑意义的气候协议，旨在减少碳排放并加速向可再生能源过渡。",
+      category: 'politics',
+      author: 'Sarah Johnson',
+      publishedAt: '2026-01-14T08:30:00Z',
+      readTime: '4 min read',
+      image: 'https://placehold.co/600x400/4f46e5/ffffff?text=Climate+Summit'
+    },
+    {
+      id: 2,
+      title: "New AI Technology Revolutionizes Healthcare Diagnostics",
+      summary: "人工智能驱动的诊断工具显示在早期疾病检测方面有95%的准确率，可能改变医疗保健行业。",
+      category: 'technology',
+      author: 'Dr. Michael Chen',
+      publishedAt: '2026-01-14T06:15:00Z',
+      readTime: '5 min read',
+      image: 'https://placehold.co/600x400/0ea5e9/ffffff?text=AI+Healthcare'
+    },
+    {
+      id: 3,
+      title: "Stock Markets Reach All-Time Highs Amid Economic Recovery",
+      summary: "全球经济复苏推动主要股指创下历史新高，投资者对2026年前景持乐观态度。",
+      category: 'business',
+      author: 'Robert Williams',
+      publishedAt: '2026-01-14T04:20:00Z',
+      readTime: '3 min read',
+      image: 'https://placehold.co/600x400/10b981/ffffff?text=Stock+Market'
+    },
+    {
+      id: 4,
+      title: "Breakthrough in Renewable Energy Storage Technology",
+      summary: "科学家开发出新的电池技术，可持续存储太阳能和风能超过100小时，成本降低30%。",
+      category: 'technology',
+      author: 'Emma Rodriguez',
+      publishedAt: '2026-01-13T18:45:00Z',
+      readTime: '6 min read',
+      image: 'https://placehold.co/600x400/f97316/ffffff?text=Renewable+Energy'
+    },
+    {
+      id: 5,
+      title: "New Dietary Guidelines Released by Health Authorities",
+      summary: "政府发布更新的营养指南，建议减少加工食品摄入并增加植物性食物比例以促进公共健康。",
+      category: 'health',
+      author: 'Dr. Lisa Wang',
+      publishedAt: '2026-01-13T15:30:00Z',
+      readTime: '4 min read',
+      image: 'https://placehold.co/600x400/8b5cf6/ffffff?text=Health+Guidelines'
+    },
+    {
+      id: 6,
+      title: "Award-Winning Director Announces New Sci-Fi Film",
+      summary: "著名导演揭示了新科幻电影的细节预料将成为今年最受期待的作品具有的视觉效果激动人心的情节。",
+      category: 'entertainment',
+      author: 'James Peterson',
+      publishedAt: '2026-01-13T12:00:00Z',
+      readTime: '3 min read',
+      image: 'https://placehold.co/600x400/ec4899/ffffff?text=Sci-Fi+Film'
+    }
+  ];
+
+  useEffect(() => {
+    // Simulate API call
+    const fetchArticles = () => {
+      setTimeout(() => {
+        setArticles(mockArticles);
+        setLoading(false);
+      }, 1000);
+    };
+
+    fetchArticles();
+  }, []);
+
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }) + ' at ' + date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const filteredArticles = activeCategory === 'all' 
+    ? articles 
+    : articles.filter(article => article.category === activeCategory);
+
+  const getCategoryColor = (category) => {
+    const colors = {
+      politics: 'bg-blue-100 text-blue-800',
+      technology: 'bg-purple-100 text-purple-800',
+      business: 'bg-green-100 text-green-800',
+      health: 'bg-red-100 text-red-800',
+      entertainment: 'bg-pink-100 text-pink-800'
+    };
+    return colors[category] || 'bg-gray-100 text-gray-800';
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">Latest News & Articles</h1>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          Stay updated with the most important stories from around the world. 
+          Our curated selection keeps you informed on politics, technology, business, health, and entertainment.
+        </p>
+      </div>
+
+      {/* Category Filter */}
+      <div className="flex flex-wrap justify-center gap-3 mb-10">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setActiveCategory(category.id)}
+            className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              activeCategory === category.id
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+        </div>
+      )}
+
+      {/* Articles Grid */}
+      {!loading && (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {filteredArticles.map((article) => (
+            <article 
+              key={article.id}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            >
+              <div className="relative">
+                <img 
+                  src={article.image} 
+                  alt={article.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(article.category)}`}>
+                    {article.category.charAt(0).toUpperCase() + article.category.slice(1)}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-indigo-600 transition-colors">
+                  {article.title}
+                </h2>
+                
+                <p className="text-gray-600 mb-4 line-clamp-3">
+                  {article.summary}
+                </p>
+                
+                <div className="flex items-center justify-between mt-6">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-800 font-semibold">
+                      {article.author.charAt(0)}
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-900">{article.author}</p>
+                      <p className="text-xs text-gray-500">{article.readTime}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500">
+                    {formatDateTime(article.publishedAt)}
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {/* No Articles Found */}
+      {!loading && filteredArticles.length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">📰</div>
+          <h3 className="text-xl font-medium text-gray-900 mb-2">No articles found</h3>
+          <p className="text-gray-600">Try selecting a different category or check back later.</p>
+        </div>
+      )}
+
+      {/* Load More Button */}
+      {!loading && filteredArticles.length > 0 && (
+        <div className="text-center mt-12">
+          <button className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg">
+            Load More Articles
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default NewsArticleSection;
