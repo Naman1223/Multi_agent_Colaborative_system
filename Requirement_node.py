@@ -5,13 +5,18 @@ from langgraph.checkpoint.memory import InMemorySaver
 from tools import pdf_to_markdown
 from rich.console import Console
 from rich.markdown import Markdown
+import sys
+
+print("Paste your text and press Ctrl+D (Unix) or Ctrl+Z (Win) to save:")
+requirements = sys.stdin.read()
+# pdfkit.from_string(requirements, 'BRD.pdf') 
 
 class AgentState(TypedDict):
     requirement: List[str]
     ask_user: List[str]
     question_count: int
 
-requirement = pdf_to_markdown("BRD.pdf")
+requirement = requirements # pdf_to_markdown("BRD.pdf")
 
 checkpointer = InMemorySaver()
 graph = StateGraph(AgentState)

@@ -39,6 +39,24 @@ def Planning_llm(prompt):
     response = model.invoke(messages)
     return response.content
 
+def UI_plan_llm(prompt):
+    llm = ChatOpenAI(
+    api_key=api_key,
+    base_url="https://openrouter.ai/api/v1",
+    model="qwen/qwen3-coder:free",
+    temperature=1.5,
+    default_headers={
+        "HTTP-Referer": "https://openrouter.ai/api/v1",  # Optional. Site URL for rankings on openrouter.ai.
+        "X-Title": "openrouter.ai",  # Optional. Site title for rankings on openrouter.ai.
+    } )
+    messages = [
+        SystemMessage(content="You are a UI/UX designer. Generate a UI/UX plan for code based on the given requirement in React.You are free to use your imagination to create a ui based on the requirements content genrated should be in english and should be in a modern and responsive design"),
+        HumanMessage(content=f"Original Requirement:\n{prompt}")
+    ]
+    response = llm.invoke(messages)
+    return response.content
+
+
 def UI_llm(prompt):
     llm = ChatOpenAI(
     api_key=api_key,
@@ -50,7 +68,7 @@ def UI_llm(prompt):
         "X-Title": "openrouter.ai",  # Optional. Site title for rankings on openrouter.ai.
     } )
     messages = [
-        SystemMessage(content="You are a UI/UX designer. Generate a UI/UX code based on the given requirement in React.Only return the code make sure not to return any other text apart from code also not include```jsx``` in the starting and  ending of the code. You are free to use your imagination to create a ui based on the requirements"),
+        SystemMessage(content="You are a UI/UX designer. Generate a UI/UX code based on the given requirement in React.Only return the code make sure not to return any other text apart from code also not include```jsx``` in the starting and  ending of the code. You are free to use your imagination to create a ui based on the requirements content genrated should be in english and should be in a modern and responsive design"),
         HumanMessage(content=f"Original Requirement:\n{prompt}")
     ]
     response = llm.invoke(messages)
