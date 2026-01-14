@@ -40,20 +40,14 @@ def Planning_llm(prompt):
     return response.content
 
 def UI_plan_llm(prompt):
-    llm = ChatOpenAI(
-    api_key=api_key,
-    base_url="https://openrouter.ai/api/v1",
-    model="qwen/qwen3-coder:free",
-    temperature=1.5,
-    default_headers={
-        "HTTP-Referer": "https://openrouter.ai/api/v1",  # Optional. Site URL for rankings on openrouter.ai.
-        "X-Title": "openrouter.ai",  # Optional. Site title for rankings on openrouter.ai.
-    } )
+    model = ChatGoogleGenerativeAI(
+    api_key=google_api_key,
+    model="gemini-3-flash-preview",)
     messages = [
         SystemMessage(content="You are a UI/UX designer. Generate a UI/UX plan for code based on the given requirement in React.You are free to use your imagination to create a ui based on the requirements content genrated should be in english and should be in a modern and responsive design"),
         HumanMessage(content=f"Original Requirement:\n{prompt}")
     ]
-    response = llm.invoke(messages)
+    response = model.invoke(messages)
     return response.content
 
 
